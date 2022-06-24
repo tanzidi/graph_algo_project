@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    body {
+      background-color: ivory;
+    }
+
+    canvas {
+      border: 1px solid red;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas" width=3050 height=1400></canvas>
+  <script>
+    const names = [
+      "Start",
+      "Tilaghor",
+      "Alurtol Road",
+      "Khamar",
+      "SAU",
+      "SEC Hall",
+      "SEC",
+      "Eco Pakrk",
+      "2nd Gate",
+      "Nayabazar",
+      "Baluchor",
+      "Shahi Edgah",
+      "Airport",
+      "Ambarkhana",
+      "Pathantula",
+      "Akhalia",
+      "SUST",
+      "Stadium Market",
+      "Dargah",
+      "Chowhatta",
+      "Taltola",
+      "Kajirbazar Bridge",
+      "Mohila College",
+      "Zindabazar",
+      "Nayorpul",
+      "Kumarpara",
+      "Bandar",
+      "Mirabazar",
+      "Kin Bridge",
+      "Terminal",
+      "Mirzajangal",
+      "Sobhanighath",
+      "Nayasarak",
+      "Jail Road",
+      "Mount Adora",
+      "Uposhahar",
+      "Surma Tower",
+      "Mc College",
+    ]
+    //width: 35, height: 16
+    const coordinates = [
+      [0, 0],
+      [12, 32],
+      [7, 29],
+      [10, 34],
+      [7, 33],
+      [5, 33],
+      [3, 33],
+      [1, 33],
+      [5, 29],
+      [4, 25],
+      [5, 22],
+      [3, 18],
+      [1, 11],
+      [3, 11],
+      [3, 6],
+      [2, 4],
+      [3, 2],
+      [7, 4],
+      [5, 11],
+      [7, 11],
+      [9, 3],
+      [8, 1],
+      [9, 11],
+      [12, 11],
+      [12, 23],
+      [7, 23],
+      [16, 14],
+      [12, 28],
+      [14, 2],
+      [16, 1],
+      [12, 7],
+      [16, 22],
+      [5, 16],
+      [12, 16],
+      [7, 16],
+      [16, 31],
+      [13, 5],
+      [12, 35],
+    ]
+    const adjGraph = [
+      [0],
+      [2, 27, 37],
+      [1, 3],
+      [2, 4],
+      [3, 5, 8],
+      [4, 6],
+      [7, 5],
+      [6],
+      [4, 9],
+      [8, 10],
+      [9, 11, 27],
+      [10, 13, 25],
+      [13],
+      [11, 12, 14, 18],
+      [13, 15],
+      [14, 16, 17],
+      [15],
+      [15, 18, 19, 20, 30],
+      [13, 17, 19],
+      [17, 18, 22, 32, 34],
+      [17, 21, 36, 30],
+      [20],
+      [19, 23],
+      [22, 26, 30, 33],
+      [25, 27, 31, 33],
+      [24, 11, 32, 34],
+      [23, 33, 31],
+      [10, 1, 24],
+      [29, 36],
+      [28],
+      [17, 23, 36, 20],
+      [24, 26, 35],
+      [19, 25, 34],
+      [23, 24, 26, 34],
+      [19, 25, 32, 33],
+      [31],
+      [20, 28, 30],
+      [1],
+    ]
+    const adjGraphNew = [
+      [0],
+      [{ x: 10, y: 10, dist: 1, cost: 1 }, 27, 37],
+      [1, 3],
+      [2, 4],
+      [3, 5, 8],
+      [4, 6],
+      [7, 5],
+      [6],
+      [4, 9],
+      [8, 10],
+      [9, 11, 27],
+      [10, 13, 25],
+      [13],
+      [11, 12, 14, 18],
+      [13, 15],
+      [14, 16, 17],
+      [15],
+      [15, 18, 19, 20, 30],
+      [13, 17, 19],
+      [17, 18, 22, 32, 34],
+      [17, 21, 36, 30],
+      [20],
+      [19, 23],
+      [22, 26, 30, 33],
+      [25, 27, 31, 33],
+      [24, 11, 32, 34],
+      [23, 33, 31],
+      [10, 1, 24],
+      [29, 36],
+      [28],
+      [17, 23, 36, 20],
+      [24, 26, 35],
+      [19, 25, 34],
+      [23, 24, 26, 34],
+      [19, 25, 32, 33],
+      [31],
+      [20, 28, 30],
+      [1],
+    ]
+    let visited = [];
+    let stack = [];
+    let check = [];
+    for (let i = 1; i <= 100; i++)visited[i] = false, check[i] = false;
+
+    function solve(node) {
+      stack.push(node);
+      while (stack.length != 0) {
+        node = stack.pop();
+        //console.log(names[node]);
+        if (visited[node] == false) {
+          visited[node] = true;
+          for (let i = 0; i < adjGraph[node].length; i++) {
+            if (visited[adjGraph[node][i]] == false) stack.push(adjGraph[node][i]);
+          }
+        }
+      }
+    }
+    //solve(33);
+
+    (function () {
+      var lastTime = 0;
+      var vendors = ['ms', 'moz', 'webkit', 'o'];
+      for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
+      }
+
+      if (!window.requestAnimationFrame) window.requestAnimationFrame = function (callback, element) {
+        var currTime = new Date().getTime();
+        var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+        var id = window.setTimeout(function () {
+          callback(currTime + timeToCall);
+        },
+          timeToCall);
+        lastTime = currTime + timeToCall;
+        return id;
+      };
+
+      if (!window.cancelAnimationFrame) window.cancelAnimationFrame = function (id) {
+        clearTimeout(id);
+      };
+    }());
+
+
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.globalCompositeOperation = 'destination-over';
+    ctx.lineCap = "round";
+
+    // variable to hold how many frames have elapsed in the animation
+    var t = 1;
+
+    // define the path to plot
+    let node = 36;
+    var vertices = [];
+    // stack.push(node);
+    // while (stack.length != 0) {
+    //   node = stack.pop();
+    //   //console.log(names[node]);
+    //   if (visited[node] == false) {
+    //     visited[node] = true;
+    //     vertices.push({ x: coordinates[node][1], y: coordinates[node][0] });
+    //     for (let i = 0; i < adjGraph[node].length; i++) {
+    //       if (visited[adjGraph[node][i]] == false) stack.push(adjGraph[node][i]);
+    //     }
+    //   }
+    // }
+    stack.push({ parent: 0, child: node });
+    while (stack.length != 0) {
+      let top = stack.pop();
+      //console.log(top);
+      node = top.child;
+
+      //console.log(names[node]);
+      if (visited[node] == false) {
+        visited[node] = true;
+        //vertices.push({ parent: top.parent, x: coordinates[node][1] * 80, y: coordinates[node][0] * 80 });
+        for (let i = 0; i < adjGraph[node].length; i++) {
+          if (visited[adjGraph[node][i]] == false) stack.push({ parent: node, child: adjGraph[node][i] });
+        }
+      }
+    }
+
+    ////
+
+
+    let distance = [];
+    let queue = [];
+    let parents = [];
+
+    function dijkstra(source) {
+      for (let i = 0; i <= 40; i++) (distance[i] = 1e6), (parents[i] = i);
+      //console.log(distance);
+      distance[source] = 0;
+      queue.push({
+        u: source,
+        cost: 0,
+      });
+
+      queue.sort((a, b) => a.cost - b.cost);
+
+      while (queue.length > 0) {
+        let u1 = queue[0].u;
+        queue.splice(0, 1);
+        adjGraph[u1].forEach((v) => {
+          if (distance[u1] + 1 < distance[v]) {
+            distance[v] = distance[u1] + 1;
+            parents[v] = u1;
+            queue.push({
+              u: v,
+              cost: distance[v],
+            });
+          }
+        });
+      }
+    }
+    let start = 27;
+    let end = 11;
+    dijkstra(start);
+
+    let path = [];
+    let ends = end;
+    path.push(ends);
+    while (ends !== start) {
+      //console.log(parents[ends]);
+      path.push(parents[ends]);
+      ends = parents[ends];
+    }
+    path.reverse();
+
+    for (let i = 0; i < path.length; i++) {
+      vertices.push({ x: coordinates[path[i]][1] * 80, y: coordinates[path[i]][0] * 80 });
+    }
+
+    ////
+
+    // vertices.push({
+    //   x: 10,
+    //   y: 10
+    // });
+    // vertices.push({
+    //   x: 200,
+    //   y: 100
+    // });
+    // vertices.push({
+    //   x: 80,
+    //   y: 200
+    // });
+    // vertices.push({
+    //   x: 10,
+    //   y: 100
+    // });
+    // vertices.push({
+    //   x: 50,
+    //   y: 50
+    // });
+
+    ctx.lineWidth = 2;
+    ctx.font = "25px Arial";
+    ctx.beginPath();
+    ctx.stroke();
+    for (let i = 1; i < 38; i++) {
+      ctx.beginPath();
+      ctx.arc(coordinates[i][1] * 80, coordinates[i][0] * 80, 25, 0, 2 * Math.PI);
+      ctx.fillStyle = "red";
+      ctx.fill();
+      ctx.fillStyle = "green";
+      ctx.fillText(i + ". " + names[i], coordinates[i][1] * 80 + 35, coordinates[i][0] * 80 - 15);
+    }
+    for (let i = 1; i < 38; i++) {
+      //console.log(adjGraph[i][0]);
+      ctx.beginPath();
+      //if (check[i] == false) {
+      for (let j = 0; j < adjGraph[i].length; j++) {
+        ctx.moveTo(coordinates[i][1] * 80, coordinates[i][0] * 80);
+
+        ctx.lineTo(coordinates[adjGraph[i][j]][1] * 80, coordinates[adjGraph[i][j]][0] * 80);
+        ctx.stroke();
+        // let xx = coordinates[adjGraph[i][j]][1] * 80 - coordinates[i][1] * 80;
+        // xx = xx / 2;
+        // let yy = coordinates[adjGraph[i][j]][0] * 80 - coordinates[i][0] * 80;
+        // yy = yy / 2;
+        // ctx.fillStyle = "blue";
+        // ctx.fillText(coordinates[i][0], (coordinates[adjGraph[i][j]][1] * 80) + xx, (coordinates[adjGraph[i][j]][0] * 80) + yy);
+
+      }
+      //check[i] = true;
+      // }
+
+    }
+
+
+
+    // stroke the path
+
+    // ctx.beginPath();
+
+    // //ctx.stroke();
+    //   ctx.lineTo(coordinates[i][1]*80, coordinates[i][0]*80);
+    //   ctx.stroke();
+
+
+    // set some style
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = "blue";
+    // calculate incremental points along the path
+    var points = calcWaypoints(vertices);
+    // extend the line from start to finish with animation
+    animate(points);
+
+
+    // calc waypoints traveling along vertices
+    function calcWaypoints(vertices) {
+      var waypoints = [];
+      for (var i = 1; i < vertices.length; i++) {
+        var pt0 = vertices[i - 1];
+        var k = vertices[i - 1].parent;
+        console.log(k);
+        //var pt0 = { x: coordin ates[k][1], y: coordinates[k][0] };
+        var pt1 = vertices[i];
+        var dx = pt1.x - pt0.x;
+        var dy = pt1.y - pt0.y;
+        for (var j = 0; j < 100; j++) {
+          var x = pt0.x + dx * j / 100;
+          var y = pt0.y + dy * j / 100;
+          waypoints.push({
+            x: x,
+            y: y
+          });
+        }
+      }
+      return (waypoints);
+    }
+
+    console.log(vertices);
+    function animate() {
+      if (t < points.length - 1) {
+        requestAnimationFrame(animate);
+      }
+      // draw a line segment from the last waypoint
+
+      // to the current waypoint
+      ctx.beginPath();
+      ctx.moveTo(points[t - 1].x, points[t - 1].y);
+      //console.log(vertices[t].parent);
+      //ctx.moveTo(coordinates[points[t].parent * 80], coordinates[points[t].parent * 80]);
+      ctx.lineTo(points[t].x, points[t].y);
+      ctx.stroke();
+      // increment "t" to get the next waypoint
+      t++;
+    }
+  </script>
+</body>
+
+</html>
